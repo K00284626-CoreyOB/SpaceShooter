@@ -1470,7 +1470,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.8374996
+  orthographic size: 6.046875
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -3514,7 +3514,6 @@ MonoBehaviour:
   health: 10
   isPaused: 0
   bossSpawned: 0
-  controlsCanvas: {fileID: 1880606220}
   pauseMenu: {fileID: 567224613}
   deadMenu: {fileID: 932103170}
   winMenu: {fileID: 752285842}

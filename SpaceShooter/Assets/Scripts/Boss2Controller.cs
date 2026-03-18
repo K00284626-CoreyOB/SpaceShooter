@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class Boss2Controller : MonoBehaviour
 {
@@ -133,6 +134,9 @@ public class Boss2Controller : MonoBehaviour
 
             if (currentHealth <= 0)
             {
+                //Game analytics for level complete
+                GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_2");
+
                 speed = 0; // Stop movement on death
                 GetComponent<Collider2D>().enabled = false;
 

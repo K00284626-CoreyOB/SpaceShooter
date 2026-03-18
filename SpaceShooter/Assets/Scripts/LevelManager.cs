@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using GameAnalyticsSDK;
 
 public class LevelManager : MonoBehaviour
 {
@@ -97,10 +98,22 @@ public class LevelManager : MonoBehaviour
         UpdateScoreUI();
         UpdateHealthUI();
 
-        // Play level music depending on the scene
-        if (scene.name == "Level1") audioManager.PlayMusic(level1Music);
-        else if (scene.name == "Level2") audioManager.PlayMusic(level2Music);
-        else if (scene.name == "Level3") audioManager.PlayMusic(level3Music);
+        // Play level music depending on the scene and handle game analytics for levels.
+        if (scene.name == "Level1")
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level_1");
+            audioManager.PlayMusic(level1Music);
+        }
+        else if (scene.name == "Level2")
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level_2");
+            audioManager.PlayMusic(level2Music);
+        }
+        else if (scene.name == "Level3")
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level_3");
+            audioManager.PlayMusic(level3Music);
+        }
     }
 
     // Called every frame
@@ -212,6 +225,20 @@ public class LevelManager : MonoBehaviour
     // Show death menu
     public void YouDied()
     {
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        //Handle Game analytics for failed level
+        if (sceneName == "Level1")
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_1");
+        }
+        else if (sceneName == "Level2")
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_2");
+        }
+        else if (sceneName == "Level3")
+        {
+            GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_3");
+        }
         isPaused = true;
         Time.timeScale = 0f;
         deadMenu.gameObject.SetActive(true);
