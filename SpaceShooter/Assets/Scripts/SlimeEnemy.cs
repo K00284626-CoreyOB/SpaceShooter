@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class SlimeEnemy : MonoBehaviour
 {
@@ -25,9 +26,11 @@ public class SlimeEnemy : MonoBehaviour
 
     // Reference to LevelManager for score tracking
     private LevelManager levelManagerScript;
+    
 
     // Reference to player for aiming
     private GameObject player;
+    private PlayerController playerController;
 
     // Projectile prefab and spawn point
     [SerializeField] private GameObject slimePrefab;
@@ -42,6 +45,7 @@ public class SlimeEnemy : MonoBehaviour
     {
         // Get player reference
         player = GameObject.FindWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
 
         // Get LevelManager reference
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
@@ -98,8 +102,12 @@ public class SlimeEnemy : MonoBehaviour
             Destroy(other.gameObject); // Destroy bullet
             health--; // Reduce health
 
+            playerController.OnEnemyHit();
+
             if (health <= 0)
             {
+                GameAnalytics.NewDesignEvent("enemy_killed:Slime");
+
                 // Stop movement
                 speed = 0;
 

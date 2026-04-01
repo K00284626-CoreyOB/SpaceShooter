@@ -222,6 +222,8 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: 483791b157aa59a45a385e4471141a63, type: 3}
   bigHitSound: {fileID: 8300000, guid: 8e3f644e85de8cf4b895c9046b15e912, type: 3}
   deadSound: {fileID: 8300000, guid: 52f17bc97818e6f4bac4467425bd27d0, type: 3}
+  shotsFired: 0
+  shotsHit: 0
 --- !u!212 &15161887
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1709,7 +1711,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 6.046875
+  orthographic size: 4.8374996
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -5333,6 +5335,7 @@ MonoBehaviour:
   health: 10
   isPaused: 0
   bossSpawned: 0
+  controls: {fileID: 1880606220}
   pauseMenu: {fileID: 567224613}
   deadMenu: {fileID: 1573461538}
   winMenu: {fileID: 1823544756}

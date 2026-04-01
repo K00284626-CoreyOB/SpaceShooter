@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class EyeballController : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class EyeballController : MonoBehaviour
     [SerializeField] private Transform firePoint;     // Where bullets are spawned
     private GameObject player;                        // Reference to the player
     private LevelManager levelManagerScript;          // Reference to level manager
+    private PlayerController playerController;          // Reference to player controller
 
     // Animation & destruction
     public Animator animator;       // Animator for death animations
@@ -34,6 +36,8 @@ public class EyeballController : MonoBehaviour
     {
         // Find references in the scene
         player = GameObject.FindWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
+
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
         audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
 
@@ -87,9 +91,13 @@ public class EyeballController : MonoBehaviour
             // Reduce health
             health--;
 
+            playerController.OnEnemyHit();
+
             // Check for death
             if (health <= 0)
             {
+                GameAnalytics.NewDesignEvent("enemy_killed:Eyeball");
+
                 // Stop movement (if using speed for other logic)
                 hoverSpeed = 0;
 

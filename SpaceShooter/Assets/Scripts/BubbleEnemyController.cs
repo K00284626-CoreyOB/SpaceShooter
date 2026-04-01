@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class BubbleEnemyController : MonoBehaviour
 {
@@ -36,9 +37,14 @@ public class BubbleEnemyController : MonoBehaviour
     public AudioClip explosion;
     public AudioClip shootSound;
 
+    public PlayerController playerController;
+
     // Start is called before the first frame update
     void Start()
     {
+        // Get player reference
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
         // Get managers
         spawnBubble = GameObject.FindWithTag("SpawnManager").GetComponent<SpawnBubble>();
         audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
@@ -81,8 +87,12 @@ public class BubbleEnemyController : MonoBehaviour
             Destroy(other.gameObject);  // Remove the player's bullet
             health--;
 
+            playerController.OnEnemyHit();
+
             if (health <= 0)
             {
+                GameAnalytics.NewDesignEvent("enemy_killed:Bubble Enemy");
+
                 // Stop enemy movement
                 speed = 0;
 

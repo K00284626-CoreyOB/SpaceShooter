@@ -22,6 +22,7 @@ public class LevelManager : MonoBehaviour
     public bool bossSpawned = false;  // True if boss has spawned
 
     // UI canvases
+    //public Canvas controls;
     public Canvas pauseMenu;
     public Canvas deadMenu;
     public Canvas winMenu;
@@ -36,6 +37,7 @@ public class LevelManager : MonoBehaviour
     private SpawnBoss3 spawnBoss3Script;
     private SpawnBubble spawnBubbleScript;
     private GameObject spawnManager;
+    private PlayerController playerController;
 
     // Audio management
     private AudioManager audioManager;
@@ -52,6 +54,7 @@ public class LevelManager : MonoBehaviour
     {
         // Prevent this object and UIs from being destroyed on scene load
         DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(controls);
         DontDestroyOnLoad(pauseMenu);
         DontDestroyOnLoad(deadMenu);
         DontDestroyOnLoad(winMenu);
@@ -129,7 +132,7 @@ public class LevelManager : MonoBehaviour
         // Boss spawn logic depending on level and kill count
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-        if (sceneName == "Level1" && killCount == 15 && !bossSpawned) //After 15 kills in level 1 spawn boss
+        if (sceneName == "Level1" && killCount == 5 && !bossSpawned) //After 15 kills in level 1 spawn boss
         {
             // Spawn boss 1
             spawnBubbleScript.BossSpawned();
@@ -141,7 +144,7 @@ public class LevelManager : MonoBehaviour
             audioManager.PlayMusic(boss1Music);
             audioManager.PlaySFX(boss1SFX);
         }
-        else if (sceneName == "Level2" && killCount == 20 && !bossSpawned) //After 20 kills in level 2 spawn boss
+        else if (sceneName == "Level2" && killCount == 5 && !bossSpawned) //After 20 kills in level 2 spawn boss
         {
             // Spawn boss 2
             bossSpawned = true;
@@ -151,7 +154,7 @@ public class LevelManager : MonoBehaviour
             //Change music to boss theme
             audioManager.PlayMusic(boss2Music);
         }
-        else if (sceneName == "Level3" && killCount == 30 && !bossSpawned) //After 30 kills in level 3 spawn boss
+        else if (sceneName == "Level3" && killCount == 5 && !bossSpawned) //After 30 kills in level 3 spawn boss
         {
             // Spawn boss 3
             spawnBubbleScript.BossSpawned();
@@ -195,6 +198,7 @@ public class LevelManager : MonoBehaviour
     // Quit to main menu
     public void QuitGame()
     {
+        Time.timeScale = 1f;
         isPaused = true;
         pauseMenu.gameObject.SetActive(false);
         deadMenu.gameObject.SetActive(false);
@@ -230,14 +234,23 @@ public class LevelManager : MonoBehaviour
         if (sceneName == "Level1")
         {
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_1");
+            float accuracy = (float)playerController.shotsHit / playerController.shotsFired;
+
+            GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
         }
         else if (sceneName == "Level2")
         {
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_2");
+            float accuracy = (float)playerController.shotsHit / playerController.shotsFired;
+
+            GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
         }
         else if (sceneName == "Level3")
         {
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Fail, "Level_3");
+            float accuracy = (float)playerController.shotsHit / playerController.shotsFired;
+
+            GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
         }
         isPaused = true;
         Time.timeScale = 0f;
@@ -280,6 +293,16 @@ public class LevelManager : MonoBehaviour
     public void SetKillCount()
     {
         killCount++;
+
+        if (killCount == 1)
+        {
+            GooglePlayManager.Instance.UnlockFirstKill();
+        }
+
+        if (killCount <= 20)
+        {
+            GooglePlayManager.Instance.Set20KillsAchievementProgress(killCount);
+        }
     }
 
     // Load the next level

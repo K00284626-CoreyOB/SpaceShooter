@@ -27,6 +27,7 @@ public class Boss2Controller : MonoBehaviour
     private GameObject shield;                         // Actual shield instance
 
     private LevelManager levelManagerScript;
+    private PlayerController playerController;
     private BossHealthBar bossHealthBar;
 
     [Header("Audio")]
@@ -36,6 +37,9 @@ public class Boss2Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Get player reference
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
         // Connect to key managers
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
         audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
@@ -132,16 +136,24 @@ public class Boss2Controller : MonoBehaviour
             currentHealth--;
             bossHealthBar.SetHealth(currentHealth);
 
+            playerController.OnEnemyHit();
+
             if (currentHealth <= 0)
             {
                 //Game analytics for level complete
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_2");
+                float accuracy = (float)playerController.shotsHit / playerController.shotsFired;
+
+                GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
+                GameAnalytics.NewDesignEvent("enemy_killed:Boss 2");
 
                 speed = 0; // Stop movement on death
                 GetComponent<Collider2D>().enabled = false;
 
                 levelManagerScript.UpdateScore(200);
                 levelManagerScript.NextLevel(3);
+
+                GooglePlayManager.Instance.UnlockBoss2();
 
                 Destroy(gameObject);
             }

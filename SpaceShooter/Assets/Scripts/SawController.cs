@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class SawController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class SawController : MonoBehaviour
 
     // Reference to LevelManager for score and kill tracking
     private LevelManager levelManagerScript;
+    private PlayerController playerController;
 
     // Target position for horizontal movement
     private Vector3 targetPos;
@@ -36,6 +38,9 @@ public class SawController : MonoBehaviour
     // Called once at the start
     void Start()
     {
+        // Get player reference
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
         // Get reference to LevelManager in the scene
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
 
@@ -91,9 +96,13 @@ public class SawController : MonoBehaviour
             Destroy(other.gameObject); // Destroy the bullet
             health--; // Reduce health
 
+            playerController.OnEnemyHit();
+
             // If health reaches 0, trigger death
             if (health <= 0)
             {
+                GameAnalytics.NewDesignEvent("enemy_killed:Saw");
+
                 // Stop movement
                 speed = 0;
                 verticalSpeed = 0;

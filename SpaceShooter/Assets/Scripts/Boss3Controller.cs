@@ -42,6 +42,7 @@ public class Boss3Controller : MonoBehaviour
     // References
     private GameObject player;
     private LevelManager levelManagerScript;
+    private PlayerController playerController;
     private BossHealthBar bossHealthBar;
 
     [Header("Audio")]
@@ -57,6 +58,7 @@ public class Boss3Controller : MonoBehaviour
 
         // References to player and level manager
         player = GameObject.FindGameObjectWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
         audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
 
@@ -180,17 +182,26 @@ public class Boss3Controller : MonoBehaviour
             currentHealth--;
             bossHealthBar.SetHealth(currentHealth);
 
+            playerController.OnEnemyHit();
+
             // Boss defeated
             if (currentHealth <= 0)
             {
                 //Game analytics for level complete
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_3");
+                float accuracy = (float)playerController.shotsHit / playerController.shotsFired;
+
+                GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
+                GameAnalytics.NewDesignEvent("enemy_killed:Boss 3");
 
                 speed = 0; // Stop movement
                 levelManagerScript.UpdateScore(300);
                 levelManagerScript.YouWin(); // Player wins the game
 
                 GetComponent<Collider2D>().enabled = false;
+
+                GooglePlayManager.Instance.UnlockFinalBoss();
+
                 Destroy(gameObject);
             }
         }

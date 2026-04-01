@@ -17,6 +17,7 @@ public class Boss1Controller : MonoBehaviour
     public float bottomLimit = -4.3f; // Lower Y boundary for bouncing
 
     private LevelManager levelManagerScript;
+    private PlayerController playerController;
     private Vector3 targetPos;      // Entry point the boss moves to at start
     private Vector3 targetPos2;     // Point to run toward after waiting
 
@@ -36,6 +37,9 @@ public class Boss1Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Get player reference
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
         // Get main LevelManager
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
         levelManagerScript.BossSpawned();
@@ -142,10 +146,16 @@ public class Boss1Controller : MonoBehaviour
             currentHealth--;
             bossHealthBar.SetHealth(currentHealth);
 
+            playerController.OnEnemyHit();
+
             if (currentHealth <= 0)
             {
                 //Game analytics for level complete
                 GameAnalytics.NewProgressionEvent(GAProgressionStatus.Complete, "Level_1");
+                float accuracy = (float)playerController.shotsHit / playerController.shotsFired;
+
+                GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
+                GameAnalytics.NewDesignEvent("enemy_killed:Boss 1");
 
                 // Stop movement completely
                 speed = 0;
@@ -156,6 +166,8 @@ public class Boss1Controller : MonoBehaviour
                 // Award score and progress to next level
                 levelManagerScript.UpdateScore(100);
                 levelManagerScript.NextLevel(2);
+
+                GooglePlayManager.Instance.UnlockBoss1();
 
                 Destroy(gameObject);
             }

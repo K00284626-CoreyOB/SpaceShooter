@@ -1,3 +1,4 @@
+using GameAnalyticsSDK;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,7 @@ public class TankEnemy : MonoBehaviour
     private GameObject player;               // Reference to the player
     private LevelManager levelManagerScript; // Reference to the level manager
     private AudioManager audioManager;       // Reference to the audio manager
+    private PlayerController playerController;       // Reference to the player controller
 
     // Sound effect for explosion/death
     public AudioClip explosion;
@@ -35,6 +37,7 @@ public class TankEnemy : MonoBehaviour
 
         // Find the player in the scene
         player = GameObject.FindWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
 
         // Get the LevelManager to update score and kill count
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
@@ -77,8 +80,12 @@ public class TankEnemy : MonoBehaviour
             // Reduce health
             health--;
 
+            playerController.OnEnemyHit();
+
             if (health <= 0)
             {
+                GameAnalytics.NewDesignEvent("enemy_killed:Tank");
+
                 // Stop movement immediately
                 speed = 0;
 

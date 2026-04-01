@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameAnalyticsSDK;
 
 public class KamikazeEnemy : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class KamikazeEnemy : MonoBehaviour
 
     public Animator animator;         // Animator for death animation
     private LevelManager levelManagerScript; // Reference to LevelManager for score/kill count
+    private PlayerController playerController; // Reference to LevelManager for score/kill count
 
     // Audio
     private AudioManager audioManager;
@@ -29,6 +31,9 @@ public class KamikazeEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Get player reference
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
         // Get LevelManager and AudioManager references
         levelManagerScript = GameObject.FindWithTag("LevelManager").GetComponent<LevelManager>();
         audioManager = GameObject.FindWithTag("AudioManager").GetComponent<AudioManager>();
@@ -84,11 +89,15 @@ public class KamikazeEnemy : MonoBehaviour
     {
         if (other.CompareTag("Bullet"))
         {
+            GameAnalytics.NewDesignEvent("enemy_killed:Kamikaze");
+
             // Destroy bullet
             Destroy(other.gameObject);
 
             // Stop movement
             speed = 0;
+
+            playerController.OnEnemyHit();
 
             // Update game stats
             levelManagerScript.SetKillCount();

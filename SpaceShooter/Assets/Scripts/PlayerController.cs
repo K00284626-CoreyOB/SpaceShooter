@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using GameAnalyticsSDK;
 
 public class PlayerController : MonoBehaviour
 {
@@ -64,6 +65,10 @@ public class PlayerController : MonoBehaviour
     public AudioClip hitSound;
     public AudioClip bigHitSound;
     public AudioClip deadSound;
+
+    //Stats for accuracy
+    public int shotsFired = 0;
+    public int shotsHit = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -152,6 +157,8 @@ public class PlayerController : MonoBehaviour
 
         // Play shooting sound
         audioManager.PlaySFX(shoot);
+
+        OnShotFired();
     }
 
     // Coroutine for slime hit effect
@@ -175,9 +182,28 @@ public class PlayerController : MonoBehaviour
 
             if (levelManagerScript.health <= 0)
             {
-                Destroy(gameObject);
+                Vector2 pos = player.transform.position;
+
+                GameAnalytics.NewDesignEvent(
+                    "player_death:" + pos.x, pos.y);
+
+                if (other.CompareTag("Saw"))
+                {
+                    GameAnalytics.NewDesignEvent("killed_by:Saw");
+                }
+                else
+                {
+                    GameAnalytics.NewDesignEvent("killed_by:Enemy Bullet");
+                }
+                    Destroy(gameObject);
                 audioManager.PlaySFX(deadSound);
                 levelManagerScript.YouDied();
+
+                // first death
+                GooglePlayManager.Instance.UnlockFirstDeath();
+
+                // end of run
+                GooglePlayManager.Instance.SubmitHighScore(levelManagerScript.score);
             }
         }
         // Damage from larger enemies like tank or kamikaze
@@ -193,9 +219,28 @@ public class PlayerController : MonoBehaviour
 
             if (levelManagerScript.health <= 0)
             {
+                Vector2 pos = player.transform.position;
+
+                GameAnalytics.NewDesignEvent(
+                    "player_death:" + pos.x, pos.y);
+
+                if (other.CompareTag("Tank"))
+                {
+                    GameAnalytics.NewDesignEvent("killed_by:Tank");
+                }
+                else
+                {
+                    GameAnalytics.NewDesignEvent("killed_by:Kamikaze");
+                }
                 Destroy(gameObject);
                 audioManager.PlaySFX(deadSound);
                 levelManagerScript.YouDied();
+
+                // first death
+                GooglePlayManager.Instance.UnlockFirstDeath();
+
+                // end of run
+                GooglePlayManager.Instance.SubmitHighScore(levelManagerScript.score);
             }
         }
         // Slime pickups trigger screen effect
@@ -213,9 +258,28 @@ public class PlayerController : MonoBehaviour
 
             if (levelManagerScript.health <= 0)
             {
+                Vector2 pos = player.transform.position;
+
+                GameAnalytics.NewDesignEvent(
+                    "player_death:" + pos.x, pos.y);
+
+                if (other.CompareTag("Beam"))
+                {
+                    GameAnalytics.NewDesignEvent("killed_by:Boss 3");
+                }
+                else
+                {
+                    GameAnalytics.NewDesignEvent("killed_by:Boss 1");
+                }
                 Destroy(gameObject);
                 audioManager.PlaySFX(deadSound);
                 levelManagerScript.YouDied();
+
+                // first death
+                GooglePlayManager.Instance.UnlockFirstDeath();
+
+                // end of run
+                GooglePlayManager.Instance.SubmitHighScore(levelManagerScript.score);
             }
         }
         // Collect score items
@@ -253,5 +317,15 @@ public class PlayerController : MonoBehaviour
         isInvincible = true;
         yield return new WaitForSeconds(invincibleDuration);
         isInvincible = false;
+    }
+
+    public void OnShotFired()
+    {
+        shotsFired++;
+    }
+
+    public void OnEnemyHit()
+    {
+        shotsHit++;
     }
 }
