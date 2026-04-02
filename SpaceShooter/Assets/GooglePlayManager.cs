@@ -1,5 +1,5 @@
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+//using GooglePlayGames;
+//using GooglePlayGames.BasicApi;
 using UnityEngine;
 
 public class GooglePlayManager : MonoBehaviour
@@ -25,8 +25,8 @@ public class GooglePlayManager : MonoBehaviour
     // Initialize the Play Games platform and authenticate the user
     private void InitializePlayGames()
     {
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
+        //PlayGamesPlatform.DebugLogEnabled = true;
+        //PlayGamesPlatform.Activate();
 
         Social.localUser.Authenticate(success => {
             isAuthenticated = success;
@@ -49,31 +49,31 @@ public class GooglePlayManager : MonoBehaviour
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.UnlockAchievement(
-            GPGSIds.achievement_first_kill,
-            success => Debug.Log("First Kill unlocked: " + success)
-        );
+        //PlayGamesPlatform.Instance.UnlockAchievement(
+        //    GPGSIds.achievement_first_kill,
+        //    success => Debug.Log("First Kill unlocked: " + success)
+        //);
     }
 
     public void UnlockFirstDeath()
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.UnlockAchievement(
-            GPGSIds.achievement_first_death,
-            success => Debug.Log("First Death unlocked: " + success)
-        );
+        //PlayGamesPlatform.Instance.UnlockAchievement(
+        //    GPGSIds.achievement_first_death,
+        //    success => Debug.Log("First Death unlocked: " + success)
+        //);
     }
 
     public void Set20KillsAchievementProgress(int totalKills)
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.SetStepsAtLeast(
-            GPGSIds.achievement_get_20_kills,
-            totalKills,
-            success => Debug.Log("20 Kills progress set: " + success)
-        );
+        //PlayGamesPlatform.Instance.SetStepsAtLeast(
+        //    GPGSIds.achievement_get_20_kills,
+        //    totalKills,
+        //    success => Debug.Log("20 Kills progress set: " + success)
+        //);
     }
 
     public void SubmitHighScore(long score)
@@ -90,30 +90,30 @@ public class GooglePlayManager : MonoBehaviour
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.UnlockAchievement(
-            GPGSIds.achievement_zarlobath_the_shell_titan,
-            success => Debug.Log("Boss 1 unlocked: " + success)
-        );
+        //PlayGamesPlatform.Instance.UnlockAchievement(
+        //    GPGSIds.achievement_zarlobath_the_shell_titan,
+        //    success => Debug.Log("Boss 1 unlocked: " + success)
+        //);
     }
 
     public void UnlockBoss2()
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.UnlockAchievement(
-            GPGSIds.achievement_auralex_the_phased_guardian,
-            success => Debug.Log("Boss 2 unlocked: " + success)
-        );
+        //PlayGamesPlatform.Instance.UnlockAchievement(
+        //    GPGSIds.achievement_auralex_the_phased_guardian,
+        //    success => Debug.Log("Boss 2 unlocked: " + success)
+        //);
     }
 
     public void UnlockFinalBoss()
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.UnlockAchievement(
-            GPGSIds.achievement_leviathar_prime,
-            success => Debug.Log("Final Boss unlocked: " + success)
-        );
+        //PlayGamesPlatform.Instance.UnlockAchievement(
+        //    GPGSIds.achievement_leviathar_prime,
+        //    success => Debug.Log("Final Boss unlocked: " + success)
+        //);
     }
 
     public void ShowAchievementsUI()
