@@ -3,47 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Bullet
-  - EnemyBullet
-  - Bubble
-  - SpawnManager
-  - BubbleEnemy
-  - Saw
-  - HealthText
-  - Tank
-  - Kamikaze
-  - PauseMenu
-  - Slime
-  - Eyeball
-  - Boss1
-  - Boss2
-  - Shield
-  - Boss3
-  - Beam
-  - LevelManager
-  - DeadMenu
-  - ScoreText
-  - star
-  - HealthPickup
-  - BubblePickup
-  - BubbleShield
-  - WinMenu
-  - BossHealthBar
-  - BossHealthBarCanvas
-  - NameText
-  - AudioManager
+  tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Player
+  - 
   - Water
   - UI
-  - Bubble
-  - EnemyBullet
-  - PlayerBullet
-  - BossShield
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

@@ -5335,7 +5335,6 @@ MonoBehaviour:
   health: 10
   isPaused: 0
   bossSpawned: 0
-  controls: {fileID: 1880606220}
   pauseMenu: {fileID: 567224613}
   deadMenu: {fileID: 1573461538}
   winMenu: {fileID: 1823544756}

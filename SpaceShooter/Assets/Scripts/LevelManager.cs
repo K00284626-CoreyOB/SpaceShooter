@@ -62,6 +62,9 @@ public class LevelManager : MonoBehaviour
 
         // Ensure game runs at normal speed
         Time.timeScale = 1f;
+
+        health = 10;
+        score = 0;
     }
 
     void OnEnable()
@@ -104,6 +107,7 @@ public class LevelManager : MonoBehaviour
         // Play level music depending on the scene and handle game analytics for levels.
         if (scene.name == "Level1")
         {
+            health = 10;
             GameAnalytics.NewProgressionEvent(GAProgressionStatus.Start, "Level_1");
             audioManager.PlayMusic(level1Music);
         }
@@ -132,7 +136,7 @@ public class LevelManager : MonoBehaviour
         // Boss spawn logic depending on level and kill count
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-        if (sceneName == "Level1" && killCount == 5 && !bossSpawned) //After 15 kills in level 1 spawn boss
+        if (sceneName == "Level1" && killCount == 10 && !bossSpawned) //After 15 kills in level 1 spawn boss
         {
             // Spawn boss 1
             spawnBubbleScript.BossSpawned();
@@ -144,7 +148,7 @@ public class LevelManager : MonoBehaviour
             audioManager.PlayMusic(boss1Music);
             audioManager.PlaySFX(boss1SFX);
         }
-        else if (sceneName == "Level2" && killCount == 5 && !bossSpawned) //After 20 kills in level 2 spawn boss
+        else if (sceneName == "Level2" && killCount == 20 && !bossSpawned) //After 20 kills in level 2 spawn boss
         {
             // Spawn boss 2
             bossSpawned = true;
@@ -154,7 +158,7 @@ public class LevelManager : MonoBehaviour
             //Change music to boss theme
             audioManager.PlayMusic(boss2Music);
         }
-        else if (sceneName == "Level3" && killCount == 5 && !bossSpawned) //After 30 kills in level 3 spawn boss
+        else if (sceneName == "Level3" && killCount == 30 && !bossSpawned) //After 30 kills in level 3 spawn boss
         {
             // Spawn boss 3
             spawnBubbleScript.BossSpawned();
@@ -199,7 +203,7 @@ public class LevelManager : MonoBehaviour
     public void QuitGame()
     {
         Time.timeScale = 1f;
-        isPaused = true;
+        isPaused = false;
         pauseMenu.gameObject.SetActive(false);
         deadMenu.gameObject.SetActive(false);
         winMenu.gameObject.SetActive(false);
@@ -229,6 +233,16 @@ public class LevelManager : MonoBehaviour
     // Show death menu
     public void YouDied()
     {
+        // first death
+        GooglePlayManager.Instance.UnlockFirstDeath();
+
+        // end of run
+        GooglePlayManager.Instance.SubmitHighScore(score);
+
+        isPaused = true;
+        Time.timeScale = 0f;
+        deadMenu.gameObject.SetActive(true);
+
         string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         //Handle Game analytics for failed level
         if (sceneName == "Level1")
@@ -252,14 +266,14 @@ public class LevelManager : MonoBehaviour
 
             GameAnalytics.NewDesignEvent("combat:accuracy", accuracy);
         }
-        isPaused = true;
-        Time.timeScale = 0f;
-        deadMenu.gameObject.SetActive(true);
+        
     }
 
     // Show win menu
     public void YouWin()
     {
+        // end of run
+        GooglePlayManager.Instance.SubmitHighScore(score);
         isPaused = true;
         Time.timeScale = 0f;
         winMenu.gameObject.SetActive(true);

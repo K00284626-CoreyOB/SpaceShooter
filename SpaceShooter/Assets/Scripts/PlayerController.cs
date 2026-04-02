@@ -195,15 +195,11 @@ public class PlayerController : MonoBehaviour
                 {
                     GameAnalytics.NewDesignEvent("killed_by:Enemy Bullet");
                 }
-                    Destroy(gameObject);
+                
                 audioManager.PlaySFX(deadSound);
                 levelManagerScript.YouDied();
 
-                // first death
-                GooglePlayManager.Instance.UnlockFirstDeath();
-
-                // end of run
-                GooglePlayManager.Instance.SubmitHighScore(levelManagerScript.score);
+                Destroy(gameObject);
             }
         }
         // Damage from larger enemies like tank or kamikaze
@@ -232,15 +228,11 @@ public class PlayerController : MonoBehaviour
                 {
                     GameAnalytics.NewDesignEvent("killed_by:Kamikaze");
                 }
-                Destroy(gameObject);
+                
                 audioManager.PlaySFX(deadSound);
                 levelManagerScript.YouDied();
 
-                // first death
-                GooglePlayManager.Instance.UnlockFirstDeath();
-
-                // end of run
-                GooglePlayManager.Instance.SubmitHighScore(levelManagerScript.score);
+                Destroy(gameObject);
             }
         }
         // Slime pickups trigger screen effect
@@ -271,15 +263,11 @@ public class PlayerController : MonoBehaviour
                 {
                     GameAnalytics.NewDesignEvent("killed_by:Boss 1");
                 }
-                Destroy(gameObject);
+                
                 audioManager.PlaySFX(deadSound);
                 levelManagerScript.YouDied();
 
-                // first death
-                GooglePlayManager.Instance.UnlockFirstDeath();
-
-                // end of run
-                GooglePlayManager.Instance.SubmitHighScore(levelManagerScript.score);
+                Destroy(gameObject);
             }
         }
         // Collect score items

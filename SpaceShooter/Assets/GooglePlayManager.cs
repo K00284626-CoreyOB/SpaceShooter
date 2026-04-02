@@ -80,11 +80,10 @@ public class GooglePlayManager : MonoBehaviour
     {
         if (!isAuthenticated) return;
 
-        PlayGamesPlatform.Instance.ReportScore(
-            score,
-            GPGSIds.leaderboard_high_scores,
-            success => Debug.Log("Score submitted: " + success)
-        );
+        Social.ReportScore(score, GPGSIds.leaderboard_high_scores, success =>
+        {
+            Debug.Log("Leaderboard submit: " + success + " | score: " + score);
+        });
     }
 
     public void UnlockBoss1()
